@@ -1,0 +1,35 @@
+project_id = "uogopwztkmfsfpktexxl"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[functions.send-otp]
+verify_jwt = false
+
+[functions.verify-aadhaar]
+verify_jwt = false
+
+[functions.fetch-land-details]
+verify_jwt = true
+
+[functions.send-whatsapp]
+verify_jwt = false
+
+[functions.mongodb-admin-auth]
+verify_jwt = false
+
+[functions.mongodb-companies]
+verify_jwt = false
+
+[functions.mongodb-lands]
+verify_jwt = false
+
+[functions.mongodb-requirements]
+verify_jwt = false
+
+[functions.upload-image]
+verify_jwt = false
