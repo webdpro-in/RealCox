@@ -1019,7 +1019,8 @@ const [landForm, setLandForm] = useState<Land>({
               </Dialog>
             </div>
 
-            {/* <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Property listings were commented out - uncommenting to fix the issue */}
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {lands.map((land) => (
                 <Card key={land._id} className="hover:shadow-lg transition-shadow">
                   {land.images && land.images.length > 0 && (
@@ -1095,7 +1096,7 @@ const [landForm, setLandForm] = useState<Land>({
                   </CardContent>
                 </Card>
               ))}
-            </div> */}
+            </div>
           </div>
         )}
 
