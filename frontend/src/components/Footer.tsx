@@ -79,12 +79,12 @@ const Footer = () => {
                 <div className="flex items-center gap-3 text-background/80">
                   <Phone className="w-5 h-5 text-secondary" />
                   <a 
-                    href="https://wa.me/917013888352?text=Hi%20RealCox,%20I%20would%20like%20to%20connect%20with%20you.%20Please%20contact%20me."
+                    href="https://wa.me/919966215578?text=Hi%20RealCox,%20I%20would%20like%20to%20connect%20with%20you.%20Please%20contact%20me."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-secondary transition-colors cursor-pointer"
                   >
-                    +91 7013888352
+                    +91 99662 15578
                   </a>
                 </div>
                 <div className="flex items-center gap-3 text-background/80">

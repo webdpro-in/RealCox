@@ -25,10 +25,10 @@ const Hero = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.phone || !formData.requirements) {
+    if (!formData.name || !formData.phone) {
       toast({
         title: "Missing Information",
-        description: "Please fill in your name, phone, and requirements.",
+        description: "Please fill in your name and phone number.",
         variant: "destructive"
       });
       return;
@@ -44,7 +44,7 @@ const Hero = () => {
         listingType: 'buy',
         budget: { min: 0, max: 10000000 },
         location: formData.location || 'Not specified',
-        message: formData.requirements
+        message: formData.requirements || 'No specific requirements provided'
       });
 
       if (!response.success) {
@@ -64,12 +64,12 @@ const Hero = () => {
 💰 *Budget:* ${formData.budget || 'Not specified'}
 
 📝 *Requirements:*
-${formData.requirements}
+${formData.requirements || 'No specific requirements provided'}
 
 Please contact me to discuss further.`;
 
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/917013888352?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/919966215578?text=${encodedMessage}`;
     
     window.open(whatsappUrl, '_blank');
     
@@ -105,48 +105,8 @@ Please contact me to discuss further.`;
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-          {/* Left Side - Hero Content */}
-          <div>
-            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-              Your Property Journey
-              <span className="bg-gradient-to-r from-secondary to-luxury bg-clip-text text-transparent block">
-                Starts Here
-              </span>
-            </h1>
-            
-            <p className="text-xl text-white/90 mb-8 leading-relaxed">
-              Tell us your property requirements and let our expert team find the perfect match for you. From residential to commercial properties - we handle everything.
-            </p>
-
-            {/* Key Features */}
-            <div className="flex flex-wrap gap-6 mb-10">
-              <div className="flex items-center gap-2 text-white/90">
-                <MapPin className="w-5 h-5 text-secondary" />
-                <span>Local & National Coverage</span>
-              </div>
-              <div className="flex items-center gap-2 text-white/90">
-                <TrendingUp className="w-5 h-5 text-secondary" />
-                <span>Expert Guidance</span>
-              </div>
-              <div className="flex items-center gap-2 text-white/90">
-                <Globe className="w-5 h-5 text-secondary" />
-                <span>Professional Service</span>
-              </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="premium" size="lg">
-                Submit Requirements
-              </Button>
-              <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-primary">
-                Contact Us
-              </Button>
-            </div>
-          </div>
-
-          {/* Right Side - Property Requirements Form */}
-          <div className="lg:mt-0 mt-8">
+          {/* Left Side - Property Requirements Form (Appears first on mobile) */}
+          <div className="order-1 lg:order-1">
             <Card className="border-primary/20 bg-white/95 backdrop-blur-sm shadow-premium">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-foreground">
@@ -161,7 +121,10 @@ Please contact me to discuss further.`;
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 gap-4">
                     <div>
-                      <Label htmlFor="name">Full Name *</Label>
+                      <Label htmlFor="name" className="flex items-center">
+                        Full Name 
+                        <span className="text-red-500 ml-1">*</span>
+                      </Label>
                       <Input
                         id="name"
                         type="text"
@@ -173,7 +136,10 @@ Please contact me to discuss further.`;
                     </div>
 
                     <div>
-                      <Label htmlFor="phone">Phone Number *</Label>
+                      <Label htmlFor="phone" className="flex items-center">
+                        Phone Number 
+                        <span className="text-red-500 ml-1">*</span>
+                      </Label>
                       <Input
                         id="phone"
                         type="tel"
@@ -231,14 +197,13 @@ Please contact me to discuss further.`;
                   </div>
 
                   <div>
-                    <Label htmlFor="requirements">Detailed Requirements *</Label>
+                    <Label htmlFor="requirements">Detailed Requirements</Label>
                     <Textarea
                       id="requirements"
                       placeholder="Describe your property requirements in detail (e.g., number of bedrooms, amenities, specific features, timeline, etc.)"
                       value={formData.requirements}
                       onChange={(e) => setFormData({...formData, requirements: e.target.value})}
                       rows={3}
-                      required
                     />
                   </div>
 
@@ -252,6 +217,46 @@ Please contact me to discuss further.`;
                 </form>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Right Side - Hero Content (Appears second on mobile) */}
+          <div className="order-2 lg:order-2">
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+              Your Property Journey
+              <span className="bg-gradient-to-r from-secondary to-luxury bg-clip-text text-transparent block">
+                Starts Here
+              </span>
+            </h1>
+            
+            <p className="text-xl text-white/90 mb-8 leading-relaxed">
+              Tell us your property requirements and let our expert team find the perfect match for you. From residential to commercial properties - we handle everything.
+            </p>
+
+            {/* Key Features */}
+            <div className="flex flex-wrap gap-6 mb-10">
+              <div className="flex items-center gap-2 text-white/90">
+                <MapPin className="w-5 h-5 text-secondary" />
+                <span>Local & National Coverage</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/90">
+                <TrendingUp className="w-5 h-5 text-secondary" />
+                <span>Expert Guidance</span>
+              </div>
+              <div className="flex items-center gap-2 text-white/90">
+                <Globe className="w-5 h-5 text-secondary" />
+                <span>Professional Service</span>
+              </div>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button variant="premium" size="lg">
+                Submit Requirements
+              </Button>
+              <Button variant="outline" size="lg" className="text-white border-white hover:bg-white hover:text-primary">
+                Contact Us
+              </Button>
+            </div>
           </div>
         </div>
       </div>

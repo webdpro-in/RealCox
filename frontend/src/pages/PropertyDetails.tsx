@@ -74,7 +74,7 @@ const PropertyDetails = () => {
 I would like to know more details about this property. Please contact me.`
 
     const encodedMessage = encodeURIComponent(message)
-    const phoneNumber = property.whatsappNumber || '+917013888352'
+    const phoneNumber = property.whatsappNumber || '+919966215578'
     const whatsappUrl = `https://wa.me/${phoneNumber.replace(/\D/g, '')}?text=${encodedMessage}`
     
     window.open(whatsappUrl, '_blank')
@@ -82,7 +82,7 @@ I would like to know more details about this property. Please contact me.`
 
   const handleCallNow = () => {
     if (!property) return
-    const phoneNumber = property.whatsappNumber || '+917013888352'
+    const phoneNumber = property.whatsappNumber || '+919966215578'
     window.open(`tel:${phoneNumber}`, '_self')
   }
 
@@ -230,7 +230,7 @@ I would like to know more details about this property. Please contact me.`
                 <div>
                   <h4 className="font-semibold mb-2">Contact Number</h4>
                   <p className="text-sm text-muted-foreground">
-                    {property.whatsappNumber || '+91 7013888352'}
+                    {property.whatsappNumber || '+91 99662 15578'}
                   </p>
                 </div>
               </CardContent>
