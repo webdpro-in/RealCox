@@ -18,6 +18,7 @@ import {
   Camera
 } from "lucide-react";
 import { getCompanies, getLands } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -51,10 +52,46 @@ const CompanyDetails = () => {
   const [properties, setProperties] = useState<Land[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const { toast } = useToast();
+
   useEffect(() => {
     if (!companyId) return;
     fetchCompanyData();
   }, [companyId]);
+
+  const handleShare = async () => {
+    if (!company) return;
+
+    const companyUrl = `${window.location.origin}/company/${company._id}`;
+    const shareData = {
+      title: `Check out ${company.name} on RealCox`,
+      text: `I found this real estate company on RealCox, check out their properties: ${company.name}`,
+      url: companyUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        console.error("Error sharing:", error);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(companyUrl);
+        toast({
+          title: "Link Copied!",
+          description: "Company URL copied to clipboard.",
+        });
+      } catch (error) {
+        console.error("Error copying to clipboard:", error);
+        toast({
+          title: "Error",
+          description: "Could not copy company link.",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   const fetchCompanyData = async () => {
     try {
@@ -195,7 +232,7 @@ const CompanyDetails = () => {
                     </Badge>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={handleShare}>
                   <Share2 className="w-4 h-4 mr-2" />
                   Share
                 </Button>
