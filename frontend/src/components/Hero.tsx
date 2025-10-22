@@ -5,6 +5,8 @@ import { MapPin, TrendingUp, Globe } from "lucide-react";
 import heroImage from "@/assets/hero-property.jpg";
 
 const Hero = () => {
+  console.log("Hero component is rendering...");
+  
   return (
     <section className="relative min-h-[700px] flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}

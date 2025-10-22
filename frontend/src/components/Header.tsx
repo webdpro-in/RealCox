@@ -9,6 +9,8 @@ const Header = () => {
   const { isAuthenticated, profile, signOut } = useAuth();
   const navigate = useNavigate();
 
+  console.log("Header component is rendering...");
+
   return (
     <header className="bg-background shadow-elegant sticky top-0 z-50">
       {/* Top contact bar */}

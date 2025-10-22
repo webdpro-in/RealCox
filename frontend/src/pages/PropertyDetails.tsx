@@ -73,11 +73,69 @@ const PropertyDetails = () => {
 
 I would like to know more details about this property. Please contact me.`
 
-    const encodedMessage = encodeURIComponent(message)
     const phoneNumber = property.whatsappNumber || '+919966215578'
-    const whatsappUrl = `https://wa.me/${phoneNumber.replace(/\D/g, '')}?text=${encodedMessage}`
-    
-    window.open(whatsappUrl, '_blank')
+    openWhatsApp(phoneNumber, message)
+  }
+
+  const openWhatsApp = (phoneNumber: string, message: string) => {
+    try {
+      console.log('Opening WhatsApp with:', { phoneNumber, message });
+      
+      // Ensure the phone number is properly formatted
+      const cleanNumber = phoneNumber.replace(/\D/g, '');
+      console.log('Cleaned number:', cleanNumber);
+      
+      // Add country code if missing (assuming India +91)
+      let formattedNumber = cleanNumber;
+      if (cleanNumber.length === 10) {
+        formattedNumber = `91${cleanNumber}`;
+      } else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) {
+        formattedNumber = `91${cleanNumber.substring(1)}`;
+      } else if (cleanNumber.length === 12 && cleanNumber.startsWith('91')) {
+        formattedNumber = cleanNumber;
+      }
+      
+      console.log('Formatted number:', formattedNumber);
+      
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${formattedNumber}?text=${encodedMessage}`;
+      
+      console.log('WhatsApp URL:', whatsappUrl);
+      
+      // Try to open WhatsApp app first (works on desktop if app is installed)
+      const appUrl = `whatsapp://send?phone=${formattedNumber}&text=${encodedMessage}`;
+      
+      console.log('App URL:', appUrl);
+      
+      // Create a fallback mechanism
+      const openWhatsAppApp = () => {
+        console.log('Attempting to open app URL');
+        window.location.href = appUrl;
+        // Fallback to web version after a short delay
+        setTimeout(() => {
+          console.log('Falling back to web URL');
+          window.open(whatsappUrl, '_blank');
+        }, 1500);
+      };
+      
+      // Check if user is on mobile device
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      console.log('Is mobile:', isMobile);
+      
+      if (isMobile) {
+        // On mobile, try to open the app directly
+        console.log('Opening on mobile');
+        openWhatsAppApp();
+      } else {
+        // On desktop, try app first, then web
+        console.log('Opening on desktop');
+        openWhatsAppApp();
+      }
+    } catch (error) {
+      console.error('Error opening WhatsApp:', error);
+      // Fallback: open a new tab with WhatsApp Web
+      window.open(`https://web.whatsapp.com/`, '_blank');
+    }
   }
 
   const handleCallNow = () => {

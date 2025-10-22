@@ -4,6 +4,8 @@ import { CheckCircle, Users, Globe, TrendingUp, Shield, Award } from "lucide-rea
 import teamPhoto from "@/assets/team-photo.jpg";
 
 const About = () => {
+  console.log("About component is rendering...");
+  
   return (
     <section id="about" className="py-20 bg-gradient-subtle">
       <div className="max-w-7xl mx-auto px-4">

@@ -20,6 +20,7 @@ interface Company {
   location: string
   contact: string
   email: string
+  countryCode?: string
 }
 
 interface Land {
@@ -59,7 +60,8 @@ const AdminDashboard = () => {
     description: '',
     location: '',
     contact: '',
-    email: ''
+    email: '',
+    countryCode: '+91'  // Default to India
   })
   const [editingCompany, setEditingCompany] = useState<Company | null>(null)
   const [companyDialogOpen, setCompanyDialogOpen] = useState(false)
@@ -126,7 +128,7 @@ const AdminDashboard = () => {
           description: `Company ${editingCompany ? 'updated' : 'created'} successfully`
         })
         setCompanyDialogOpen(false)
-        setCompanyForm({ name: '', description: '', location: '', contact: '', email: '' })
+        setCompanyForm({ name: '', description: '', location: '', contact: '', email: '', countryCode: '+91' })
         setEditingCompany(null)
         fetchData()
       } else {
@@ -577,7 +579,7 @@ const AdminDashboard = () => {
                 <DialogTrigger asChild>
                   <Button onClick={() => {
                     setEditingCompany(null)
-                    setCompanyForm({ name: '', description: '', location: '', contact: '', email: '' })
+                    setCompanyForm({ name: '', description: '', location: '', contact: '', email: '', countryCode: '+91' })
                   }} size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Company
@@ -618,14 +620,37 @@ const AdminDashboard = () => {
                         required
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="contact">Contact</Label>
-                      <Input
-                        id="contact"
-                        value={companyForm.contact}
-                        onChange={(e) => setCompanyForm({...companyForm, contact: e.target.value})}
-                        required
-                      />
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="col-span-1">
+                        <Label htmlFor="countryCode">Country Code</Label>
+                        <Select 
+                          value={companyForm.countryCode} 
+                          onValueChange={(value) => setCompanyForm({...companyForm, countryCode: value})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Code" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="+91">🇮🇳 +91 (India)</SelectItem>
+                            <SelectItem value="+1">🇺🇸 +1 (USA)</SelectItem>
+                            <SelectItem value="+44">🇬🇧 +44 (UK)</SelectItem>
+                            <SelectItem value="+61">🇦🇺 +61 (Australia)</SelectItem>
+                            <SelectItem value="+92">🇵🇰 +92 (Pakistan)</SelectItem>
+                            <SelectItem value="+971">🇦🇪 +971 (UAE)</SelectItem>
+                            <SelectItem value="+65">🇸🇬 +65 (Singapore)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="col-span-2">
+                        <Label htmlFor="contact">Contact Number</Label>
+                        <Input
+                          id="contact"
+                          value={companyForm.contact}
+                          onChange={(e) => setCompanyForm({...companyForm, contact: e.target.value})}
+                          placeholder="Phone number"
+                          required
+                        />
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="email">Email</Label>
@@ -662,7 +687,8 @@ const AdminDashboard = () => {
                               description: company.description,
                               location: company.location,
                               contact: company.contact,
-                              email: company.email
+                              email: company.email,
+                              countryCode: company.countryCode || '+91'
                             })
                             setCompanyDialogOpen(true)
                           }}

@@ -54,6 +54,8 @@ const propertyTypes = [
 ];
 
 const PropertyTypes = () => {
+  console.log("PropertyTypes component is rendering...");
+  
   return (
     <section className="py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4">

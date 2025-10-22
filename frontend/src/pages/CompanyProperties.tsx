@@ -66,6 +66,53 @@ const CompanyProperties = () => {
     fetchData()
   }, [companyId])
 
+  const openWhatsApp = (phoneNumber: string, message: string) => {
+    try {
+      // Ensure the phone number is properly formatted
+      const cleanNumber = phoneNumber.replace(/\D/g, '');
+      
+      // Add country code if missing (assuming India +91)
+      let formattedNumber = cleanNumber;
+      if (cleanNumber.length === 10) {
+        formattedNumber = `91${cleanNumber}`;
+      } else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) {
+        formattedNumber = `91${cleanNumber.substring(1)}`;
+      } else if (cleanNumber.length === 12 && cleanNumber.startsWith('91')) {
+        formattedNumber = cleanNumber;
+      }
+      
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${formattedNumber}?text=${encodedMessage}`;
+      
+      // Try to open WhatsApp app first (works on desktop if app is installed)
+      const appUrl = `whatsapp://send?phone=${formattedNumber}&text=${encodedMessage}`;
+      
+      // Create a fallback mechanism
+      const openWhatsAppApp = () => {
+        window.location.href = appUrl;
+        // Fallback to web version after a short delay
+        setTimeout(() => {
+          window.open(whatsappUrl, '_blank');
+        }, 1500);
+      };
+      
+      // Check if user is on mobile device
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // On mobile, try to open the app directly
+        openWhatsAppApp();
+      } else {
+        // On desktop, try app first, then web
+        openWhatsAppApp();
+      }
+    } catch (error) {
+      console.error('Error opening WhatsApp:', error);
+      // Fallback: open a new tab with WhatsApp Web
+      window.open(`https://web.whatsapp.com/`, '_blank');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -137,7 +184,7 @@ const CompanyProperties = () => {
                     <div className="flex items-center gap-2">
                       <Phone className="w-4 h-4 text-primary" />
                       <a 
-                        href={`https://wa.me/${company.contact.replace(/\D/g, '')}?text=Hi, I would like to know about your properties`}
+                        href={`https://wa.me/${String(company.contact || '').replace(/\D/g, '')}?text=Hi, I would like to know about your properties`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-green-600 hover:text-green-700 transition-colors"
@@ -221,16 +268,18 @@ const CompanyProperties = () => {
                         </Link>
                         
                         {property.whatsappNumber && (
-                          <a
-                            href={`https://wa.me/${property.whatsappNumber.replace(/\D/g, '')}?text=Hi, I'm interested in ${property.title}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <Button 
+                            variant="outline" 
+                            className="w-full" 
+                            size="sm"
+                            onClick={() => {
+                              const message = `Hi, I'm interested in ${property.title}`;
+                              openWhatsApp(property.whatsappNumber!, message);
+                            }}
                           >
-                            <Button variant="outline" className="w-full" size="sm">
-                              <Phone className="w-4 h-4 mr-2" />
-                              Contact via WhatsApp
-                            </Button>
-                          </a>
+                            <Phone className="w-4 h-4 mr-2" />
+                            Contact via WhatsApp
+                          </Button>
                         )}
                       </div>
                     </div>

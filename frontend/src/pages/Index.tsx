@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import CompaniesListing from "@/components/CompaniesListing";
-import FeaturedProperties from "@/components/FeaturedProperties";
+import LatestPropertyDetails from "@/components/LatestPropertyDetails";
 import PropertyTypes from "@/components/PropertyTypes";
 import About from "@/components/About";
 import Services from "@/components/Services";
@@ -18,16 +18,23 @@ const Index = () => {
     if (metaDescription) {
       metaDescription.setAttribute("content", "Discover properties worldwide on RealCox.com. From village homes to luxury estates, commercial buildings to agricultural land. Global real estate made simple with expert support and secure transactions.");
     }
+    
+    // Debug: Log that the page is loading
+    console.log("Main page is loading...");
   }, []);
 
   return (
     <main className="min-h-screen bg-background">
-      <Header />
-      <Hero />
-      <CompaniesListing />
-      <About />
-      <Services />
-      <Footer />
+      <div id="main-page-content">
+        <Header />
+        <Hero />
+        <CompaniesListing />
+        <LatestPropertyDetails />
+        <PropertyTypes />
+        <About />
+        <Services />
+        <Footer />
+      </div>
     </main>
   );
 };

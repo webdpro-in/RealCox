@@ -125,7 +125,62 @@ const CompanyDetails = () => {
     const phoneNumber = property.whatsappNumber || company?.contact;
     if (phoneNumber) {
       const cleanNumber = phoneNumber.replace(/\D/g, '');
-      window.open(`https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`, '_blank');
+      openWhatsApp(cleanNumber, message);
+    }
+  };
+
+  const handleContactCompany = () => {
+    if (company) {
+      const message = `Hi, I'm interested in learning more about ${company.name}. Can you provide more details about your properties?`;
+      const cleanNumber = String(company.contact || '').replace(/\D/g, '');
+      openWhatsApp(cleanNumber, message);
+    }
+  };
+
+  const openWhatsApp = (phoneNumber: string, message: string) => {
+    try {
+      // Ensure the phone number is properly formatted
+      const cleanNumber = phoneNumber.replace(/\D/g, '');
+      
+      // Add country code if missing (assuming India +91)
+      let formattedNumber = cleanNumber;
+      if (cleanNumber.length === 10) {
+        formattedNumber = `91${cleanNumber}`;
+      } else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) {
+        formattedNumber = `91${cleanNumber.substring(1)}`;
+      } else if (cleanNumber.length === 12 && cleanNumber.startsWith('91')) {
+        formattedNumber = cleanNumber;
+      }
+      
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${formattedNumber}?text=${encodedMessage}`;
+      
+      // Try to open WhatsApp app first (works on desktop if app is installed)
+      const appUrl = `whatsapp://send?phone=${formattedNumber}&text=${encodedMessage}`;
+      
+      // Create a fallback mechanism
+      const openWhatsAppApp = () => {
+        window.location.href = appUrl;
+        // Fallback to web version after a short delay
+        setTimeout(() => {
+          window.open(whatsappUrl, '_blank');
+        }, 1500);
+      };
+      
+      // Check if user is on mobile device
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // On mobile, try to open the app directly
+        openWhatsAppApp();
+      } else {
+        // On desktop, try app first, then web
+        openWhatsAppApp();
+      }
+    } catch (error) {
+      console.error('Error opening WhatsApp:', error);
+      // Fallback: open a new tab with WhatsApp Web
+      window.open(`https://web.whatsapp.com/`, '_blank');
     }
   };
 
@@ -245,7 +300,7 @@ const CompanyDetails = () => {
               {/* Contact Actions */}
               <div className="flex flex-wrap gap-4">
                 <Button 
-                  onClick={() => handleContactProperty({ whatsappNumber: company.contact } as Land)}
+                  onClick={handleContactCompany}
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
                   <Phone className="w-4 h-4 mr-2" />

@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 const Footer = () => {
   const navigate = useNavigate();
 
+  console.log("Footer component is rendering...");
+
   const handleAdminLogin = () => {
     navigate('/admin');
   };

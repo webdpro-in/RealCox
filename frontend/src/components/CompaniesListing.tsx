@@ -36,6 +36,55 @@ const CompaniesListing = () => {
     fetchCompanies()
   }, [])
 
+  console.log("CompaniesListing component is rendering...", { companies, loading });
+
+  const openWhatsApp = (phoneNumber: string, message: string) => {
+    try {
+      // Ensure the phone number is properly formatted
+      const cleanNumber = String(phoneNumber || '').replace(/\D/g, '');
+      
+      // Add country code if missing (assuming India +91)
+      let formattedNumber = cleanNumber;
+      if (cleanNumber.length === 10) {
+        formattedNumber = `91${cleanNumber}`;
+      } else if (cleanNumber.length === 11 && cleanNumber.startsWith('0')) {
+        formattedNumber = `91${cleanNumber.substring(1)}`;
+      } else if (cleanNumber.length === 12 && cleanNumber.startsWith('91')) {
+        formattedNumber = cleanNumber;
+      }
+      
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${formattedNumber}?text=${encodedMessage}`;
+      
+      // Try to open WhatsApp app first (works on desktop if app is installed)
+      const appUrl = `whatsapp://send?phone=${formattedNumber}&text=${encodedMessage}`;
+      
+      // Create a fallback mechanism
+      const openWhatsAppApp = () => {
+        window.location.href = appUrl;
+        // Fallback to web version after a short delay
+        setTimeout(() => {
+          window.open(whatsappUrl, '_blank');
+        }, 1500);
+      };
+      
+      // Check if user is on mobile device
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // On mobile, try to open the app directly
+        openWhatsAppApp();
+      } else {
+        // On desktop, try app first, then web
+        openWhatsAppApp();
+      }
+    } catch (error) {
+      console.error('Error opening WhatsApp:', error);
+      // Fallback: open a new tab with WhatsApp Web
+      window.open(`https://web.whatsapp.com/`, '_blank');
+    }
+  };
+
   if (loading) {
     return (
       <section className="py-20 bg-background" id="companies">
@@ -77,15 +126,14 @@ const CompaniesListing = () => {
                 Companies will appear here once they are added through the admin panel.
               </p>
             </div>
-          ) :
-           (
+          ) : (
             companies.map((company) => (
               <Card key={company._id} className="hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        {company?.logoUrl? (
+                        {company?.logoUrl ? (
                           <img 
                             src={company?.logoUrl} 
                             alt={company?.name}
@@ -110,17 +158,17 @@ const CompaniesListing = () => {
                       <MapPin className="w-4 h-4 text-primary" />
                       <span>{company?.location}</span>
                     </div>
-                      {/* <div className="flex items-center gap-2 text-sm">
+                    <div className="flex items-center gap-2 text-sm">
                       <Phone className="w-4 h-4 text-primary" />
                       <a 
-                        href={`https://wa.me/${company?.contact.replace(/\D/g, '')}?text=Hi, I would like to know about your properties`}
+                        href={`https://wa.me/${String(company?.contact || '').replace(/\D/g, '')}?text=Hi, I would like to know about your properties`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-green-600 hover:text-green-700 transition-colors"
                       >
                         {company?.contact}
                       </a>
-                    </div>  */}
+                    </div>
                     <div className="flex items-center gap-2 text-sm">
                       <Mail className="w-4 h-4 text-primary" />
                       <a 
@@ -132,11 +180,23 @@ const CompaniesListing = () => {
                     </div>
                     
                     <div className="pt-4 border-t">
-                      <Link to={`/company/${company._id}`}>
-                        <Button className="w-full" variant="outline">
-                          View Properties
+                      <div className="flex gap-2">
+                        <Link to={`/company/${company._id}`}>
+                          <Button className="w-full" variant="outline">
+                            View Properties
+                          </Button>
+                        </Link>
+                        <Button 
+                          className="w-full bg-green-600 hover:bg-green-700 text-white"
+                          onClick={() => {
+                            const message = `Hi, I would like to know about your properties`;
+                            const cleanNumber = String(company.contact || '').replace(/\D/g, '');
+                            openWhatsApp(cleanNumber, message);
+                          }}
+                        >
+                          <Phone className="w-4 h-4" />
                         </Button>
-                      </Link>
+                      </div>
                     </div>
                   </div>
                 </CardContent>

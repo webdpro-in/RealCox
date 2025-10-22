@@ -22,6 +22,7 @@ interface Company {
   contact: string
   email: string
   logoUrl?: string
+  countryCode?: string
 }
 
 interface Land {
@@ -75,6 +76,7 @@ const AdminPanel = () => {
     contact: '',
     email: '',
     logoUrl: '',
+    countryCode: '+91'  // Default to India
   })
 
 const [landForm, setLandForm] = useState<Land>({
@@ -264,7 +266,7 @@ const [landForm, setLandForm] = useState<Land>({
       }
 
       // Reset form
-      // setCompanyForm({ name: '', description: '', location: '', contact: '', email: '', logoUrl: '' })
+      // setCompanyForm({ name: '', description: '', location: '', contact: '', email: '', logoUrl: '', countryCode: '+91' })
       setCompanyLogoFile(null)
       setCompanyDialogOpen(false)
       setEditingCompany(null)
@@ -653,7 +655,7 @@ const [landForm, setLandForm] = useState<Land>({
                 <DialogTrigger asChild>
                   <Button onClick={() => {
                     setEditingCompany(null)
-                    setCompanyForm({ name: '', description: '', location: '', contact: '', email: '', logoUrl: '' })
+                    setCompanyForm({ name: '', description: '', location: '', contact: '', email: '', logoUrl: '', countryCode: '+91' })
                     setCompanyLogoFile(null)
                   }}>
                     <Plus className="h-4 w-4 mr-2" />
